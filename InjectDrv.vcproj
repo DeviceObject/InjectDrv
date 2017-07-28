@@ -55,6 +55,9 @@
 				BufferSecurityCheck="false"
 				UsePrecompiledHeader="0"
 				AssemblerListingLocation="..\Bin"
+				ObjectFile="..\Bin\"
+				ProgramDataBaseFileName="..\Bin\vc90.pdb"
+				XMLDocumentationFileName="..\Bin\"
 				WarningLevel="3"
 				WarnAsError="true"
 				Detect64BitPortabilityProblems="true"
@@ -74,9 +77,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="false"
+				AdditionalDependencies="ntoskrnl.lib"
 				OutputFile="..\Bin\$(ProjectName)x86.sys"
 				LinkIncremental="2"
 				GenerateManifest="false"
+				ManifestFile="..\Bin\$(TargetFileName).intermediate.manifest"
 				EnableUAC="false"
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
@@ -207,6 +212,7 @@
 			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
+			BuildLogFile="..\Bin\BuildLog.htm"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -254,14 +260,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(NOINHERIT)"
+				AdditionalDependencies="ntoskrnl.lib"
 				OutputFile="..\Bin\$(ProjectName)x86.sys"
 				LinkIncremental="1"
 				GenerateManifest="false"
 				ManifestFile="..\Bin\$(TargetFileName).intermediate.manifest"
 				EnableUAC="false"
 				IgnoreAllDefaultLibraries="true"
-				GenerateDebugInformation="true"
+				GenerateDebugInformation="false"
 				SubSystem="3"
 				OptimizeReferences="1"
 				EnableCOMDATFolding="1"
@@ -276,6 +282,9 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				OutputManifestFile="..\Bin\$(TargetFileName).embed.manifest"
+				ManifestResourceFile="..\Bin\$(TargetFileName).embed.manifest.res"
+				DependencyInformationFile="..\Bin\mt.dep"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -300,6 +309,7 @@
 			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
+			BuildLogFile="..\Bin\BuildLog.htm"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -321,6 +331,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="2"
 				PreprocessorDefinitions="_AMD64_;_WIN64;NDEBUG;_CONSOLE"
 				ExceptionHandling="0"
 				RuntimeLibrary="0"
@@ -333,7 +344,7 @@
 				WarningLevel="3"
 				WarnAsError="true"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
+				DebugInformationFormat="0"
 				CallingConvention="1"
 				CompileAs="1"
 			/>
@@ -352,9 +363,10 @@
 				OutputFile="..\Bin\$(ProjectName)x64.sys"
 				LinkIncremental="1"
 				GenerateManifest="false"
+				ManifestFile="..\Bin\$(TargetFileName).intermediate.manifest"
 				EnableUAC="false"
 				IgnoreAllDefaultLibraries="true"
-				GenerateDebugInformation="true"
+				GenerateDebugInformation="false"
 				SubSystem="3"
 				Driver="1"
 				OptimizeReferences="1"
@@ -402,6 +414,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\InitializeInjectRelevantInfo.c"
+				>
+			</File>
+			<File
 				RelativePath=".\InjectDrv.c"
 				>
 			</File>
@@ -433,6 +449,10 @@
 			>
 			<File
 				RelativePath=".\DrvCfg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\InitializeInjectRelevantInfo.h"
 				>
 			</File>
 			<File

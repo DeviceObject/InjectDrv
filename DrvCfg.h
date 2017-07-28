@@ -7,7 +7,7 @@
 #include <ntdef.h>
 #include <ntimage.h>
 
-
+#define MAX_THREAD_COUNT 64
 
 #define MAKEWORD(a, b)      ((USHORT)(((BYTE)(((ULONG_PTR)(a)) & 0xff)) | ((USHORT)((BYTE)(((ULONG_PTR)(b)) & 0xff))) << 8))
 #define MAKELONG(a, b)      ((LONG)(((USHORT)(((ULONG_PTR)(a)) & 0xffff)) | ((ULONG)((USHORT)(((ULONG_PTR)(b)) & 0xffff))) << 16))
@@ -32,6 +32,8 @@ typedef struct _FUNCTION_DAT
 
 	//ULONG_PTR My_ZwWriteFile;
 	//ULONG My_ZwWriteFile_HashValue;
+	PSSETCREATEPROCESSNOTIFYROUTINE My_PsSetCreateProcessNotifyRoutine;
+	ULONG My_PsSetCreateProcessNotifyRoutine_HashValue;
 
 	ZWCLOSE My_ZwClose;
 	ULONG My_ZwClose_HashValue;
@@ -105,6 +107,53 @@ typedef struct _FUNCTION_DAT
 	PSREMOVELOADIMAGENOTIFYROUTINE My_PsRemoveLoadImageNotifyRoutine;
 	ULONG My_PsRemoveLoadImageNotifyRoutine_HashValue;
 
+	PSGETVERSION My_PsGetVersion;
+	ULONG My_PsGetVerion_HashValue;
+
+	MMISADDRESSVALID My_MmIsAddressValid;
+	ULONG My_MmIsAddressValid_HashValue;
+
+	OBOPENOBJECTBYPOINTER My_ObOpenObjectByPointer;
+	ULONG My_ObOpenObjectByPointer_HashValue;
+
+	ZWQUERYINFORMATIONTHREAD My_ZwQueryInformationThread;
+	ULONG My_ZwQueryInformationThread_HashValue;
+
+	ZWQUERYINFORMATIONPROCESS My_ZwQueryInformationProcess;
+	ULONG My_ZwQueryInformationProcess_HashValue;
+
+	PSLOOKUPPROCESSBYPROCESSID My_PsLookupThreadByThreadId;
+	ULONG My_PsLookupThreadByThreadId_HashValue;
+
+	IOTHREADTOPROCESS My_IoThreadToProcess;
+	ULONG My_IoThreadToProcess_HashValue;
+
+	IOALLOCATEMDL My_IoAllocateMdl;
+	ULONG My_IoAllocateMdl_HashValue;
+
+	MMPROBEANDLOCKPAGES My_MmProbeAndLockPages;
+	ULONG My_MmProbeAndLockPages_HashValue;
+
+	MMMAPLOCKEDPAGESSPECIFYCACHE My_MmMapLockedPagesSpecifyCache;
+	ULONG My_MmMapLockedPagesSpecifyCache_HashValue;
+
+	MMUNLOCKPAGES My_MmUnlockPages;
+	ULONG My_MmUnlockPages_HashValue;
+
+	IOFREEMDL My_IoFreeMdl;
+	ULONG My_IoFreeMdl_HashValue;
+
+	KEBUGCHECKEX My_KeBugCheckEx;
+	ULONG My_KeBugCheckEx_HashValue;
+
+	MMGETSYSTEMROUTINEADDRESS My_MmGetSystemRoutineAddress;
+	ULONG My_MmGetSystemRoutineAddress_HashValue;
+
+	RTLINITUNICODESTRING My_RtlInitUnicodeString;
+	ULONG My_RtlInitUnicodeString_HashValue;
+
+	RTLDECOMPRESSBUFFER My_RtlDecompressBuffer;
+	ULONG My_RtlDecompressBuffer_HashValue;
 
 	//WCSSTR My_Wcsstr;
 	//ULONG My_Wcsstr_HashValue;
@@ -114,6 +163,7 @@ typedef struct _FUNCTION_DAT
 	ULONG ulEndApiHashValue;
 }FUNCTION_DAT,*PFUNCTION_DAT;
 #pragma pack()
+
 NTSTATUS DriverEntry(PDRIVER_OBJECT pDrvObj,PUNICODE_STRING pUniRegister);
 
 extern PFUNCTION_DAT g_pFunctionDat;
@@ -122,5 +172,10 @@ extern BOOLEAN g_bInjectProcessFlag;
 extern PVOID g_pInjectBuffer;
 extern ULONG g_ulInjectShellCodeLength;
 //extern PVOID g_pInjectShellCode;
+extern KEDELAYEXECUTIONTHREAD g_KeDelayExecutionThread;
+#ifndef _WIN64
+extern KEQUERYSYSTEMTIME g_KeQuerySystemTime;
+#endif
+extern EXSYSTEMTIMETOLOCALTIME g_ExSystemTimeToLocalTime;
 
 #endif

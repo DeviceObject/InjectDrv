@@ -17,4 +17,8 @@ BOOLEAN InjectProcess(HANDLE hProcessId);
 BOOLEAN InsertApc(PVOID pShellCode,PKAPC pApc);
 VOID InjectNotifyRoutine(PUNICODE_STRING FullImageName,HANDLE ProcessId,PIMAGE_INFO ImageInfo);
 
+//VOID SystemSleep(LONGLONG sec);
+//VOID SystemReboot();
+//LONG MyGetCurrentTime();
+
 #endif

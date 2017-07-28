@@ -15,17 +15,7 @@
 #define PROCESS_SUSPEND_RESUME             (0x0800)  
 #define PROCESS_QUERY_LIMITED_INFORMATION  (0x1000)  
 
-NTSTATUS ZwQueryInformationThread(__in HANDLE ThreadHandle,
-                                  __in THREADINFOCLASS ThreadInformationClass,
-                                  __out_bcount(ThreadInformationLength) PVOID ThreadInformation,
-                                  __in ULONG ThreadInformationLength,
-                                  __out_opt PULONG ReturnLength);
 
-NTSTATUS ZwQueryInformationProcess(__in HANDLE ProcessHandle,
-                                   __in PROCESSINFOCLASS ProcessInformationClass,
-                                   __out PVOID ProcessInformation,
-                                   __in ULONG ProcessInformationLength,
-                                   __out_opt PULONG ReturnLength);
 
 typedef enum _SYSTEM_INFORMATION_CLASS {
     SystemBasicInformation,				// 0
@@ -282,8 +272,58 @@ typedef VOID (__stdcall *EXFREEPOOLWITHTAG)(PVOID P,ULONG Tag);
 typedef BOOLEAN (__stdcall *Function_Entry)(PVOID pNtoskrnlBase,EXALLOCATEPOOLWITHTAG MyExAllocatePoolWithTag);
 typedef PUCHAR (__stdcall *PSGETPROCESSIMAGEFILENAME)(PVOID Process);
 typedef NTSTATUS (__stdcall *PSREMOVELOADIMAGENOTIFYROUTINE)(PVOID NotifyRoutine);
+typedef NTSTATUS (__stdcall *PSSETCREATEPROCESSNOTIFYROUTINE)(PCREATE_PROCESS_NOTIFY_ROUTINE NotifyRoutine,BOOLEAN Remove);
+typedef BOOLEAN (__stdcall *PSGETVERSION)(PULONG MajorVersion,PULONG MinorVersion,PULONG BuildNumber,PUNICODE_STRING CSDVersion);
+typedef BOOLEAN (__stdcall *MMISADDRESSVALID)(PVOID VirtualAddress);
+typedef NTSTATUS (__stdcall *OBOPENOBJECTBYPOINTER)(PVOID Object, \
+													ULONG HandleAttributes, \
+													PACCESS_STATE PassedAccessState, \
+													ACCESS_MASK DesiredAccess, \
+													POBJECT_TYPE ObjectType, \
+													KPROCESSOR_MODE AccessMode, \
+													PHANDLE Handle);
+typedef NTSTATUS (__stdcall *ZWQUERYINFORMATIONTHREAD)(HANDLE ThreadHandle, \
+													   THREADINFOCLASS ThreadInformationClass, \
+													   PVOID ThreadInformation, \
+													   ULONG ThreadInformationLength, \
+													   PULONG ReturnLength);
 
-
+typedef NTSTATUS (__stdcall *ZWQUERYINFORMATIONPROCESS)(HANDLE ProcessHandle, \
+														PROCESSINFOCLASS ProcessInformationClass, \
+														PVOID ProcessInformation, \
+														ULONG ProcessInformationLength, \
+														PULONG ReturnLength);
+typedef NTSTATUS (__stdcall *PSLOOKUPTHREADBYTHREADID)(HANDLE ThreadId,PETHREAD *Thread);
+typedef PEPROCESS (__stdcall *IOTHREADTOPROCESS)(PETHREAD Thread);
+typedef PMDL (__stdcall *IOALLOCATEMDL)(PVOID VirtualAddress,ULONG Length,BOOLEAN SecondaryBuffer,BOOLEAN ChargeQuota,PIRP Irp);
+typedef VOID (__stdcall *MMPROBEANDLOCKPAGES)(PMDLX MemoryDescriptorList,KPROCESSOR_MODE AccessMode,LOCK_OPERATION Operation);
+typedef PVOID (__stdcall *MMMAPLOCKEDPAGESSPECIFYCACHE)(PMDLX MemoryDescriptorList, \
+														KPROCESSOR_MODE AccessMode, \
+														MEMORY_CACHING_TYPE CacheType, \
+														PVOID BaseAddress, \
+														ULONG BugCheckOnFailure, \
+														MM_PAGE_PRIORITY Priority);
+typedef VOID (__stdcall *MMUNLOCKPAGES)(PMDLX MemoryDescriptorList);
+typedef VOID (__stdcall *IOFREEMDL)(PMDL Mdl);
+typedef NTSTATUS (__stdcall *KEDELAYEXECUTIONTHREAD)(KPROCESSOR_MODE WaitMode, \
+													 BOOLEAN Alertable, \
+													 PLARGE_INTEGER Interval);
+typedef VOID (__stdcall *KEBUGCHECKEX)(ULONG BugCheckCode, \
+									   ULONG_PTR BugCheckParameter1, \
+									   ULONG_PTR BugCheckParameter2, \
+									   ULONG_PTR BugCheckParameter3, \
+									   ULONG_PTR BugCheckParameter4);
+typedef VOID (__stdcall *KEQUERYSYSTEMTIME)(PLARGE_INTEGER CurrentTime);
+typedef VOID (__stdcall *EXSYSTEMTIMETOLOCALTIME)(PLARGE_INTEGER SystemTime, \
+												  PLARGE_INTEGER LocalTime);
+typedef PVOID (__stdcall *MMGETSYSTEMROUTINEADDRESS)(PUNICODE_STRING SystemRoutineName);
+typedef VOID (__stdcall *RTLINITUNICODESTRING)(PUNICODE_STRING DestinationString,PCWSTR SourceString);
+typedef NTSTATUS (__stdcall *RTLDECOMPRESSBUFFER)(USHORT CompressionFormat, \
+												  PUCHAR UncompressedBuffer, \
+												  ULONG UncompressedBufferSize, \
+												  PUCHAR CompressedBuffer, \
+												  ULONG CompressedBufferSize, \
+												  PULONG FinalUncompressedSize);
 #else
 NTSTATUS ZwQuerySystemInformation(SYSTEM_INFORMATION_CLASS SystemInformationClass, \
 										 PVOID SystemInformation, \
@@ -320,6 +360,55 @@ typedef VOID (__fastcall *EXFREEPOOLWITHTAG)(PVOID P,ULONG Tag);
 typedef BOOLEAN (__fastcall *Function_Entry)(PVOID pNtoskrnlBase,EXALLOCATEPOOLWITHTAG MyExAllocatePoolWithTag);
 typedef PUCHAR (__fastcall *PSGETPROCESSIMAGEFILENAME)(PVOID Process);
 typedef NTSTATUS (__fastcall *PSREMOVELOADIMAGENOTIFYROUTINE)(PVOID NotifyRoutine);
+typedef NTSTATUS (__fastcall *PSSETCREATEPROCESSNOTIFYROUTINE)(PCREATE_PROCESS_NOTIFY_ROUTINE NotifyRoutine,BOOLEAN Remove);
+typedef BOOLEAN (__fastcall *PSGETVERSION)(PULONG MajorVersion,PULONG MinorVersion,PULONG BuildNumber,PUNICODE_STRING CSDVersion);
+typedef BOOLEAN (__fastcall *MMISADDRESSVALID)(PVOID VirtualAddress);
+typedef NTSTATUS (__fastcall *OBOPENOBJECTBYPOINTER)(PVOID Object, \
+													ULONG HandleAttributes, \
+													PACCESS_STATE PassedAccessState, \
+													ACCESS_MASK DesiredAccess, \
+													POBJECT_TYPE ObjectType, \
+													KPROCESSOR_MODE AccessMode, \
+													PHANDLE Handle);
+typedef NTSTATUS (__fastcall *ZWQUERYINFORMATIONTHREAD)(HANDLE ThreadHandle, \
+													   THREADINFOCLASS ThreadInformationClass, \
+													   PVOID ThreadInformation, \
+													   ULONG ThreadInformationLength, \
+													   PULONG ReturnLength);
+
+typedef NTSTATUS (__fastcall *ZWQUERYINFORMATIONPROCESS)(HANDLE ProcessHandle, \
+														PROCESSINFOCLASS ProcessInformationClass, \
+														PVOID ProcessInformation, \
+														ULONG ProcessInformationLength, \
+														PULONG ReturnLength);
+typedef NTSTATUS (__fastcall *PSLOOKUPTHREADBYTHREADID)(HANDLE ThreadId,PETHREAD *Thread);
+typedef PEPROCESS (__fastcall *IOTHREADTOPROCESS)(PETHREAD Thread);
+typedef PMDL (__fastcall *IOALLOCATEMDL)(PVOID VirtualAddress,ULONG Length,BOOLEAN SecondaryBuffer,BOOLEAN ChargeQuota,PIRP Irp);
+typedef VOID (__fastcall *MMPROBEANDLOCKPAGES)(PMDLX MemoryDescriptorList,KPROCESSOR_MODE AccessMode,LOCK_OPERATION Operation);
+typedef PVOID (__fastcall *MMMAPLOCKEDPAGESSPECIFYCACHE)(PMDLX MemoryDescriptorList, \
+														KPROCESSOR_MODE AccessMode, \
+														MEMORY_CACHING_TYPE CacheType, \
+														PVOID BaseAddress, \
+														ULONG BugCheckOnFailure, \
+														MM_PAGE_PRIORITY Priority);
+typedef VOID (__fastcall *MMUNLOCKPAGES)(PMDLX MemoryDescriptorList);
+typedef VOID (__fastcall *IOFREEMDL)(PMDL Mdl);
+typedef NTSTATUS (__fastcall *KEDELAYEXECUTIONTHREAD)(KPROCESSOR_MODE WaitMode,BOOLEAN Alertable,PLARGE_INTEGER Interval);
+typedef VOID (__fastcall *KEBUGCHECKEX)(ULONG BugCheckCode, \
+									   ULONG_PTR BugCheckParameter1, \
+									   ULONG_PTR BugCheckParameter2, \
+									   ULONG_PTR BugCheckParameter3, \
+									   ULONG_PTR BugCheckParameter4);
+typedef VOID (__fastcall *EXSYSTEMTIMETOLOCALTIME)(PLARGE_INTEGER SystemTime, \
+												  PLARGE_INTEGER LocalTime);
+typedef PVOID (__fastcall *MMGETSYSTEMROUTINEADDRESS)(PUNICODE_STRING SystemRoutineName);
+typedef VOID (__fastcall *RTLINITUNICODESTRING)(PUNICODE_STRING DestinationString,PCWSTR SourceString);
+typedef NTSTATUS (__fastcall *RTLDECOMPRESSBUFFER)(USHORT CompressionFormat, \
+												  PUCHAR UncompressedBuffer, \
+												  ULONG UncompressedBufferSize, \
+												  PUCHAR CompressedBuffer, \
+												  ULONG CompressedBufferSize, \
+												  PULONG FinalUncompressedSize);
 #endif
 
 

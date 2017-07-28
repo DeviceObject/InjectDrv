@@ -4,7 +4,7 @@
 
 extern void x64_Call_Loader(EXALLOCATEPOOLWITHTAG MyExAllocatePoolWithTag,PUCHAR pBaseAddr);
 extern void x64_Call_Work();
-//PCHAR pShow = "ntoskrnl.exe";
+
 NTSTATUS DriverEntry(PDRIVER_OBJECT pDriverObject,PUNICODE_STRING pUniRegister)
 {
 	NTSTATUS Status;
@@ -12,8 +12,9 @@ NTSTATUS DriverEntry(PDRIVER_OBJECT pDriverObject,PUNICODE_STRING pUniRegister)
 	UNREFERENCED_PARAMETER(pDriverObject);
 	UNREFERENCED_PARAMETER(pUniRegister);
 #ifndef _WIN64
-	x86_Call_Initialize(NULL,NULL);
-	x86_Call_Work();
+	//x86_Call_Initialize(ExAllocatePoolWithTag,pDriverObject->DriverStart);
+	//x86_Call_Work();
+	InitializeFunctionDat(g_pFunctionDat);
 #else
 	//x64_Call_Loader(NULL,NULL);
 	//x64_Call_Work();
